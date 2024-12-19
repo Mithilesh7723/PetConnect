@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+        
+        :root {
+            --primary-color: #a159e4;
+            --primary-color-dark: #9333ea;
+            --secondary-color: #ca8a04;
+            --text-dark: #778598;
+            --text-light: #6b7280;
+            --extra-light: #000000;
+            --max-width: 1200px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+    
+            background-image: url(/Images/img\ 3.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: #c82323;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1; /* Ensures the main content takes up available space */
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            width: 100%;
+            position: fixed; /* Make it fixed or moving */
+            top: 0;
+            left: 0;
+            padding: 0.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 99;
+            height: 130px;
+        }
+
+        .nav__content {
+            max-width: var(--max-width);
+            margin: auto;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+            transition: transform 0.5s ease-in-out;
+        }
+        .logo:hover img {
+            transform: scale(1.6);
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            list-style: none;
+            transition: left 0.3s;
+        }
+
+        nav ul li a {
+            padding: 0.5rem 0.8rem;
+            border: 2px solid transparent;
+            text-decoration: none;
+            font-weight: 600;
+            color: #9f9f9f;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            border-top-color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .cart-container {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 130px auto 0; /* Adjusted to account for navbar height */
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .cart-item img {
+            max-width: 100px;
+            border-radius: 5px;
+        }
+
+        footer {
+            background-color: #0e0101;
+            color: wheat; 
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .empty-cart-message {
+            margin-top: 100px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #55bca7;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-total h4 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav__content">
+            <div class="logo"><a href="#Home"><img src="/Images/Logo.png" alt="Petconnect" /></a></div>
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/index.html#services">Services</a></li>
+                <li><a href="/Functions/adopt.html">Adoption</a></li>
+                <li id="authSection"><a href="/Login/login.html">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="cart-container" id="cartContainer">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 PetConnect. All rights reserved.
+    </footer>
+
+    <script>
+        // JavaScript for handling cart
+        function displayCart() {
+            const cartContainer = document.getElementById('cartContainer');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cartContainer.innerHTML = '';
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `<p class="empty-cart-message">Your cart is empty.</p>`;
+                return;
+            }
+            cart.forEach((item, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <div class="cart-item-img">
+                        <img src="${item.imageUrl}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <h5>${item.name}</h5>
+                        <p>${item.category}</p>
+                        <p><strong>Price:</strong> ${item.price ? `$${item.price}` : 'Free'}</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})">Remove</button>
+                `;
+                cartContainer.appendChild(cartItem);
+            });
+        }
+
+        function removeFromCart(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        displayCart();
+    </script>
+</body>
+</html>

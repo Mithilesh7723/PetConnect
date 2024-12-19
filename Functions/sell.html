@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Pet Products</title>
+    <style>
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+:root {
+  --primary-color: #a159e4;
+  --primary-color-dark: #9333ea;
+  --secondary-color: #ca8a04;
+  --text-dark: #778598;
+  --text-light: #6b7280;
+  --extra-light: #000000;
+  --max-width: 1200px;
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(/Images/Home.jpg);
+            background-size: cover;
+    
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+
+        }
+        header{
+            background-color: transparent;
+            color: white;
+            padding: 160px 0;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #281129;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+  width: 100%;
+  position: fixed; /*make it fixed or moving */
+  top: 0;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background-color: rgb(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 99;
+  height: 130px;
+}
+
+.nav__content {
+  max-width: var(--max-width);
+  margin: auto;
+  padding:1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+  transition: transform 0.5s ease-in-out;
+}
+.logo:hover img{
+ transform: scale(1.6);
+}
+
+nav .checkbox {
+  display: none;
+}
+
+nav input {
+  display: none;
+}
+nav .checkbox i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  transition: left 0.3s;
+}
+
+ul li a {
+  padding: 0.5rem 0.8rem;
+  border: 2px solid transparent;
+  text-decoration: none;
+  font-weight: 600;
+  color: #9f9f9f;
+  transition: 0.3s;
+}
+
+ul li a:hover {
+  border-top-color: var(--secondary-color);
+  border-bottom-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 0 20px;
+        }
+        .wrapper {
+            width: 500px;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(169, 114, 245, 0.3);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border-radius: 20px;
+            margin: 20px auto;
+            padding: 40px 40px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center align children horizontally */
+        }
+
+
+        .wrapper h2 {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+        }
+
+        .wrapper .input-box {
+            width: 100%; /* Keep input boxes full width of the wrapper */
+            margin-bottom: 25px; /* Spacing between input boxes */
+            text-align: center; /* Center the content within the input box */
+        }
+
+
+        .wrapper .input-box input,
+        .wrapper .input-box textarea {
+            width: 100%; /* Input fields take full width of the parent */
+            background: transparent;
+            border: none;
+            outline: none;
+            border: 2px solid rgba(68, 0, 255, 0.619);
+            border-radius: 20px;
+            font-size: 16px;
+            color: #fff;
+            padding: 15px;
+            margin-top: 10px; /* Adds spacing between fields */
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+
+        .wrapper .input-box textarea {
+            height: 100px;
+            border-radius: 10px;
+            resize: none;
+        }
+
+        #petType {
+            width: 100%; /* Input fields take full width of the parent */
+            background: transparent;
+            border: none;
+            outline: none;
+            border: 2px solid rgba(68, 0, 255, 0.619);
+            border-radius: 20px;
+            font-size: 16px;
+            color: #fff;
+            padding: 15px;
+            margin-top: 10px; /* Adds spacing between fields */
+            box-sizing: border-box;
+        }
+        #petType option {
+    background-image: rgb(29, 29, 36);
+    color: #640505;              
+    padding: 10px;   
+    font-size: 16px;          /* Font size */
+}
+
+/* Focused dropdown styling */
+#petType:focus {
+    border-color: #4b0000;    /* Purple border when focused */
+    outline: none; 
+}
+
+        .wrapper .input-box input::placeholder,
+        .wrapper .input-box textarea::placeholder {
+            color: #e4e3e3;
+        }
+
+
+
+        .wrapper .input-box input[type="file"] {
+    display: none; /* Hides the default file input */
+}
+
+        .wrapper .custom-file-upload {
+            display: inline-block;
+            color: #efefef;
+            border: 2px solid rgba(138, 101, 240, 0.3);
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+            text-align: center;
+        }
+
+        .wrapper .custom-file-upload:hover {
+            background: rgba(138, 101, 240, 0.3);
+            color: white;
+        }
+
+
+        .wrapper .btn {
+            width: 100%;
+            height: 50px;
+            background: rgb(218, 210, 255);
+            border: none;
+            outline: none;
+            border-radius: 25px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            color: #352092;
+            font-weight: 700;
+            font-size: 16px;
+            transition: 0.3s;
+            margin-top: 20px; /* Adds spacing before the button */
+        }
+
+        .wrapper .btn:hover {
+            background: transparent;
+            transform: translateY(-3px);
+            color: #e4e3e3;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="nav__content">
+          <div class="logo"><a href="#Home"><img src="/Images/Logo.png" alt="Petconnect" /></a></div>
+          <label for="check" class="checkbox">
+            <i class="ri-menu-line"></i>
+          </label>
+          <input type="checkbox" name="check" id="check" />
+          <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/index.html#services">Services</a></li>
+            <li><a href="/Functions/adopt.html">Adoption</a></li>
+            <li id="authSection"><a href="/Login/login.html">Sign In</a></li>
+          </ul>
+        </div>
+      </nav>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Sell Your Pet Products</h1>
+        <p>List your pet products for sale to help others care for their pets!</p>
+    </header>
+
+    <!-- Product Listing Form -->
+    <div class="wrapper">
+        <h3>Product Listing Form</h3>
+        <form id="productForm">
+            <div class="input-box">
+            <input type="text" id="productName" placeholder="Product Name" required>
+
+            <select id="petType" class="form-select" required>
+                <option value="" disabled selected>Product Type</option>
+                <option value="Pet">Pets</option>
+                <option value="Pet_essential">Pet-Essentials</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <textarea id="productDescription" placeholder="Product Description" rows="4" required></textarea>
+            <input type="number" id="productPrice" placeholder="Price" required>
+            <label for="productImage" class="custom-file-upload">Upload Product Image</label>
+            <input type="file" id="productImage" accept="image/*" required>
+            <img id="productImagePreview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
+            <img id="productImagePreview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
+            <button type="submit" class="btn">List Product</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 PetConnect. All rights reserved.
+    </footer>
+
+    
+    <script>
+     // JavaScript for sell.html
+
+// Image Preview for Product Form
+// Select the form
+const productForm = document.getElementById('productForm');
+
+// Image Preview for Product Form
+const productImageInput = document.getElementById('productImage');
+const productImagePreview = document.getElementById('productImagePreview');
+
+productImageInput.addEventListener('change', () => {
+    const file = productImageInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            productImagePreview.src = e.target.result;
+            productImagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        productImagePreview.style.display = 'none';
+    }
+});
+
+// Handle product listing form submission
+productForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const productName = document.getElementById('productName').value.trim();
+    const productCategory = document.getElementById('petType').value.trim(); // Corrected ID here
+    const productDescription = document.getElementById('productDescription').value.trim();
+    const productPrice = parseFloat(document.getElementById('productPrice').value.trim());
+    const productImage = document.getElementById('productImage').files[0];
+
+    // Validate inputs
+    if (!productName || !productCategory || !productDescription || isNaN(productPrice) || productPrice <= 0 || !productImage) {
+        alert("Please fill all fields with valid information.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const newProduct = {
+            name: productName,
+            category: productCategory,
+            description: productDescription,
+            price: productPrice.toFixed(2), // Store price as a string with two decimal places
+            imageUrl: e.target.result,
+        };
+
+        // Add product to the products array and update localStorage
+        const productsForSale = JSON.parse(localStorage.getItem('productsForSale')) || [];
+        productsForSale.push(newProduct);
+        localStorage.setItem('productsForSale', JSON.stringify(productsForSale));
+
+        alert("Product listed successfully!");
+        productForm.reset();
+        productImagePreview.style.display = 'none';
+    };
+    reader.readAsDataURL(productImage);
+});
+
+    </script>
+</body>
+</html>

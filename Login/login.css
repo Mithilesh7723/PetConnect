@@ -1,0 +1,238 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+:root {
+  --primary-color: #a159e4;
+  --primary-color-dark: #9333ea;
+  --secondary-color: #ca8a04;
+  --text-dark: #778598;
+  --text-light: #6b7280;
+  --extra-light: #000000;
+  --max-width: 1200px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)
+  ),url(/Images/Home.jpg) no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+}
+
+nav {
+  width: 100%;
+  position: fixed; /*make it fixed or moving */
+  top: 0;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background-color: rgb(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 99;
+}
+
+.nav__content {
+  max-width: var(--max-width);
+  margin: auto;
+  padding:1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+  transition: transform 0.5s ease-in-out;
+}
+.logo:hover img{
+ transform: scale(1.6);
+}
+
+nav .checkbox {
+  display: none;
+}
+
+nav input {
+  display: none;
+}
+nav .checkbox i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  transition: left 0.3s;
+}
+
+ul li a {
+  padding: 0.5rem 0.8rem;
+  border: 2px solid transparent;
+  text-decoration: none;
+  font-weight: 600;
+  color: #9f9f9f;
+  transition: 0.3s;
+}
+
+ul li a:hover {
+  border-top-color: var(--secondary-color);
+  border-bottom-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.wrapper {
+  width: 420px;
+  background: transparent;
+  border: 2px solid rgba(108, 104, 236, 0.262);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+  color: #fff;
+  border-radius: 10px;
+  padding: 30px 40px;
+  margin-top: 200px;
+  margin-bottom: 100px;
+}
+
+.wrapper h1 {
+  font-size: 36px;
+  text-align: center;
+}
+
+.wrapper .input-box {
+  width: 100%;
+  height: 60px;
+  position: relative;
+  margin-top: 20px;
+}
+
+.input-box input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  border: 2px solid rgba(121, 105, 239, 0.2);
+  border-radius: 40px;
+  font-size: 16px;
+  color: #fff;
+  padding: 20px 40px 20px 20px;
+}
+
+.input-box input::placeholder {
+  color: #fff;
+}
+
+#eye {
+  position: absolute;
+  margin-top: 24px;
+  margin-left: -30px;
+  cursor: pointer;
+}
+
+.wrapper .remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14.5px;
+  margin: 15px 5px 15px;
+}
+
+.remember-forgot label input {
+  accent-color: #fff;
+  margin-right: 3px;
+}
+
+.remember-forgot a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.remember-forgot a:hover {
+  text-decoration: underline;
+  color: aqua;
+}
+
+.wrapper .btn,
+#google-login-btn {
+  width: 100%;
+  height: 45px;
+  background: #fff;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  cursor: pointer;
+  color: #333;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.wrapper .btn:hover,
+#google-login-btn:hover {
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  text-decoration: underline;
+  color: aqua;
+}
+
+.wrapper .register-link {
+  font-size: 14.5px;
+  text-align: center;
+  margin: 20px 0 15px;
+}
+
+.register-link p a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link p a:hover {
+  text-decoration: underline;
+  color: aqua;
+}
+
+footer {
+  margin-top: auto;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  text-align: center;
+  padding: 20px 0;
+}
+
+footer .icons {
+  margin-bottom: 10px;
+}
+
+footer .icons .icon {
+  display: inline-block;
+  margin: 0 10px;
+  color: #fff;
+  font-size: 18px;
+}
+
+footer .icons .icon:hover {
+  color: var(--secondary-color);
+  transition: 0.3s;
+}
+
+footer .footer-content {
+  font-size: 14px;
+}

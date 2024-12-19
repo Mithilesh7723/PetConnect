@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petconnect - Register</title>
+    <link rel="stylesheet" href="register.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav__content">
+            <div class="logo">
+                <a href="index.html"><img src="/Images/Logo.png" alt="Petconnect Logo" /></a>
+            </div>
+            <label for="check" class="checkbox">
+                <i class="ri-menu-line"></i>
+            </label>
+            <input type="checkbox" name="check" id="check" />
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/index.html#services">Services</a></li>
+                <li><a href="Adoption.html">Adoption</a></li>
+                <li><a href="/index.html#contact">Contact Us</a></li>
+                <li><a href="login.html">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Registration Form -->
+    <div class="wrapper">
+        <form action="login.html" method="post">
+            <h1>Register</h1>
+
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username" required minlength="6">
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="passwordfield" name="password" placeholder="Password" required>
+                <i class="ri-eye-line" id="eye" onclick="EyeButton()"></i>
+            </div>
+
+            <div class="input-box">
+                <input type="tel" name="phone" placeholder="Mobile Number" required pattern="[0-9]{10}">
+            </div>
+
+            <div class="input-box">
+                <input type="email" name="email" placeholder="Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+            </div>
+
+            <!-- Google Login Button -->
+            <div class="input-box">
+                <button type="button" class="btn google-btn">
+                    <i class="ri-google-fill"></i> Sign Up with Google
+                </button>
+            </div>
+
+            <div>
+                <button type="submit" class="btn" id="register-btn">Register</button>
+            </div>
+
+            <div class="register-link">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Petconnect. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

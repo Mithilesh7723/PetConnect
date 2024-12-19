@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Pet Owner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f8fc;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Pet Owner</h1>
+        <p><strong>Pet Name:</strong> <span id="petName"></span></p>
+        <p><strong>Owner:</strong> <span id="ownerName"></span></p>
+        <p>To contact the owner of this pet, please email us or call the listed number.</p>
+        <p><strong>Email:</strong> contact@petconnect.com</p>
+        <p><strong>Phone:</strong> +1-800-555-1234</p>
+    </div>
+    <script>
+        // Parse URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const petName = urlParams.get('petName') || 'Unknown';
+        const owner = urlParams.get('owner') || 'Unknown';
+
+        // Display pet and owner details
+        document.getElementById('petName').textContent = petName;
+        document.getElementById('ownerName').textContent = owner;
+    </script>
+</body>
+</html>

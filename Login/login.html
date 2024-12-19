@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Petconnect</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="nav__content">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="/Images/Logo.png" alt="Petconnect">
+                </a>
+            </div>
+            <label for="check" class="checkbox">
+                <i class="ri-menu-line"></i>
+            </label>
+            <input type="checkbox" name="check" id="check">
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/index.html#services">Services</a></li>
+                <li><a href="/Functions/adopt.html">Adoption</a></li>
+                <li><a href="/index.html#contact">Contact Us</a></li>
+                <li><a href="register.html">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="wrapper">
+        <form id="login-form">
+            <h1>Login</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Username" required>
+            </div>
+            <div class="input-box">
+                <input type="password" id="passwordfield" placeholder="Password" required>
+                <i class="ri-eye-line" id="eye" onclick="EyeButton()"></i>
+            </div>
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox">Remember me
+                </label>
+                <a href="forget.html">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <button type="button" id="google-login-btn"class="ri-google-fill"> Login with Google</button>
+            <div class="register-link">
+                <p>Don't have an account? <a href="register.html">Register</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer (reuse from index.html) -->
+    <footer>
+        <div class="social">
+            <div class="icons">
+                <a href="#" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="icon twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="icon instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="icon linkedin"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="icon youtube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-content">
+            <div class="copyright">
+                &copy; 2024 Petconnect. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
