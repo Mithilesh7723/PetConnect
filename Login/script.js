@@ -55,3 +55,23 @@ document.getElementById("login-form").addEventListener("submit", (e) => {
     e.preventDefault();
     alert("Login with username/password is not implemented yet.");
 });
+
+document.getElementById("register-btn").addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent default form submission
+    
+    // Collect form values
+    const username = document.querySelector("input[name='username']").value;
+    const password = document.querySelector("input[name='password']").value;
+    const phone = document.querySelector("input[name='phone']").value;
+    const email = document.querySelector("input[name='email']").value;
+
+    // Validate and show a message
+    if (username && password && phone && email) {
+        alert("Registration successful (placeholder). Implement backend logic here.");
+        console.log("User data:", { username, password, phone, email });
+    } else {
+        alert("Please fill in all fields correctly.");
+    }
+});
+document.querySelector(".google-btn").addEventListener("click", googleLogin);
+

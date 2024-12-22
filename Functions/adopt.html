@@ -325,6 +325,62 @@ ul li a:hover {
             color: #e4e3e3;
         }
 
+        @media (max-width: 768px) {
+  .product-card {
+    min-height: 400px;
+  }
+
+  .wrapper {
+    width: 100%;
+    padding: 20px;
+  }
+
+  ul {
+    display: none; /* Hide the navigation menu by default on small screens */
+  }
+
+  .nav__content {
+    position: relative;
+  }
+
+  .nav-toggle {
+    display: block;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .nav__content.active ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1rem;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    min-height: 350px;
+  }
+
+  .product-card h5 {
+    font-size: 1.2rem;
+  }
+
+  .product-card p {
+    font-size: 0.9rem;
+  }
+
+  .wrapper {
+    padding: 15px;
+  }
+}
+
     </style>
 </head>
 <body>
@@ -418,7 +474,6 @@ ul li a:hover {
 
     <script src="/auth.js"></script>
     <script>
-
 let currentDisplayCount = 8; // Number of items to display initially
 const productsForSaleListing = JSON.parse(localStorage.getItem('productsForSale')) || [];
 const adoptablePetsListing = JSON.parse(localStorage.getItem('adoptablePets')) || [];
@@ -427,6 +482,9 @@ const buyListing = document.getElementById('buyListing');
 const adoptListing = document.getElementById('adoptListing');
 const loadMoreButton = document.getElementById('loadMoreButton');
 const loadMoreContainer = document.getElementById('loadMoreContainer');
+
+// Initialize the cart from localStorage or an empty array
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Reusable function to display items
 function displayItems(items, container, isAdoptSection = false) {
@@ -454,10 +512,10 @@ function displayItems(items, container, isAdoptSection = false) {
                         data-name="${item.name}" 
                         data-category="${item.category}" 
                         data-description="${item.description}" 
-                        data-image="${item.imageUrl}">
+                        data-image="${item.imageUrl}"
+                        data-price="${item.price || 0}">
                         Add to Cart
                     </button>`}
-
                 </div>
             </div>
         `;
@@ -475,77 +533,51 @@ function displayItems(items, container, isAdoptSection = false) {
 displayItems(productsForSaleListing, buyListing);
 displayItems(adoptablePetsListing, adoptListing, true);
 
-// Handle "Load More" button click for adopt section
-loadMoreButton.addEventListener('click', () => {
-    currentDisplayCount += 4; // Increase the number of displayed items by 4
-    displayItems(adoptablePetsListing, adoptListing, true);
-});
-document.addEventListener('DOMContentLoaded', () => {
-    // Handle adding new pets for adoption
-    const addPetForm = document.getElementById('addPetForm');
+// Render cart items
+function renderCart() {
+    const cartContainer = document.getElementById('cartContainer');
+    if (!cartContainer) return; // Safely exit if container doesn't exist
 
-    addPetForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+    cartContainer.innerHTML = ""; // Clear the cart container
 
-        const petName = document.getElementById('petName').value;
-        const petType = document.getElementById('petType').value;
-        const petDescription = document.getElementById('petDescription').value;
-        const petImage = document.getElementById('productImage').files[0]; // Fix the input ID reference
-
-        if (petImage) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const newPet = {
-                    name: petName,
-                    category: petType,
-                    description: petDescription,
-                    imageUrl: e.target.result,
-                };
-
-                const adoptablePetsListing = JSON.parse(localStorage.getItem('adoptablePets')) || [];
-                adoptablePetsListing.push(newPet);
-                localStorage.setItem('adoptablePets', JSON.stringify(adoptablePetsListing));
-
-                addPetForm.reset();
-                displayItems(adoptablePetsListing, document.getElementById('adoptListing'), true); // Refresh adoptListing
-
-                // Show success message
-                alert('Pet added successfully!');
-            };
-            reader.readAsDataURL(petImage);
-        } else {
-            alert('Please upload an image of the pet!');
-        }
-    });
-
-    // Function to show feedback message
-    function showFeedback(message, type) {
-        const feedbackContainer = document.createElement('div');
-        feedbackContainer.classList.add('feedback-message', type);
-        feedbackContainer.textContent = message;
-
-        // Append feedback message to the form or anywhere you like
-        const formContainer = document.getElementById('addPetForm');
-        formContainer.appendChild(feedbackContainer);
-
-        // Remove the feedback message after 3 seconds
-        setTimeout(() => {
-            feedbackContainer.remove();
-        }, 3000);
+    if (cart.length === 0) {
+        cartContainer.innerHTML = `<p class="text-center">Your cart is empty.</p>`;
+        return;
     }
-});
+
+    cart.forEach((item) => {
+        const cartItemDiv = document.createElement('div');
+        cartItemDiv.classList.add('cart-item', 'mb-3');
+        cartItemDiv.innerHTML = `
+            <div class="card">
+                <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
+                <div class="card-body">
+                    <h5 class="card-title">${item.name}</h5>
+                    <p><strong>Type:</strong> ${item.category}</p>
+                    <p>${item.description}</p>
+                    <p><strong>Price:</strong> $${item.price}</p>
+                </div>
+            </div>
+        `;
+        cartContainer.appendChild(cartItemDiv);
+    });
+}
 
 // Handle "Add to Cart" button clicks
-const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('add-to-cart-button')) {
         const petName = e.target.getAttribute('data-name');
         const petCategory = e.target.getAttribute('data-category');
         const petDescription = e.target.getAttribute('data-description');
         const petImage = e.target.getAttribute('data-image');
+        const petPrice = parseFloat(e.target.getAttribute('data-price')) || 0;
 
-        console.log("Item added to cart:", { petName, petCategory, petDescription, petImage });
+        // Check if item is already in the cart
+        const isItemInCart = cart.some(item => item.name === petName);
+        if (isItemInCart) {
+            alert(`${petName} is already in your cart!`);
+            return;
+        }
 
         // Create cart item object
         const cartItem = {
@@ -553,18 +585,32 @@ document.addEventListener('click', (e) => {
             category: petCategory,
             description: petDescription,
             imageUrl: petImage,
+            price: petPrice // Include the price
         };
 
         // Add item to cart
         cart.push(cartItem);
- // Save updated cart to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Provide user feedback
-        alert(`${petName} has been added to your cart!`);
+        try {
+            // Save updated cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${petName} has been added to your cart!`);
+            renderCart(); // Refresh the cart UI
+        } catch (error) {
+            if (error.name === "QuotaExceededError") {
+                alert("Your cart is full! Please clear some items before adding new ones.");
+            } else {
+                console.error("Error adding to cart:", error);
+            }
+        }
     }
-
 });
+
+// Load the cart on page load
+document.addEventListener('DOMContentLoaded', () => {
+    renderCart();
+});
+
 
 
 

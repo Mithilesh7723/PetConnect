@@ -236,3 +236,36 @@ footer .icons .icon:hover {
 footer .footer-content {
   font-size: 14px;
 }
+@media (max-width: 768px) {
+  .nav__content {
+    flex-direction: column;
+  }
+
+  ul {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .wrapper {
+    margin-top: 150px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 0.5rem;
+  }
+
+  .nav__content {
+    padding: 0;
+  }
+
+  .logo img {
+    width: 80px;
+  }
+
+  .wrapper h1 {
+    font-size: 28px;
+  }
+}
