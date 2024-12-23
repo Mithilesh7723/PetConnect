@@ -318,68 +318,130 @@ ul li a:hover {
         </div>
     </div>
 
-    <script>
-        const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-
-function updateCart() {
-    const cartTableBody = document.getElementById("cartItems");
-    cartTableBody.innerHTML = "";
-
-    let grandTotal = 0;
-
-    cartItems.forEach((item, index) => {
-        const total = (item.price || 0) * (item.quantity || 1);
-        grandTotal += total;
-
-        cartTableBody.innerHTML += `
-            <tr>
-                <td>
-                    <img src="${item.image || 'default-image.png'}" alt="${item.name}" style="width: 80px; height: auto; border-radius: 8px;">
-                </td>
-                <td>${item.name || 'Unnamed Item'}</td>
-                <td>$${item.price || '0.00'}</td>
-                <td>
-                    <button class="btn btn-danger" onclick="removeItem(${index})">Remove</button>
-                </td>
-            </tr>
-        `;
-    });
-
-    document.getElementById("grandTotal").innerText = `$${grandTotal.toFixed(2)}`;
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-}
-
-function removeItem(index) {
-    cartItems.splice(index, 1);
-    updateCart();
-}
-
-function emptyCart() {
-    cartItems.length = 0;
-    updateCart();
-}
-
-function showModal() {
-    if (cartItems.length === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
-    document.getElementById("modalOverlay").style.display = "flex";
-}
-
-function closeModal() {
-    document.getElementById("modalOverlay").style.display = "none";
-}
-
-function submitPurchase() {
-    alert("Purchase complete. Thank you!");
-    closeModal();
-    emptyCart();
-}
-
-// Initial render
-updateCart();
-
+    <script type="module">
+        // Import Firebase modules (v9+)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBP8nXl5E_sbgWJ0gtg2Zc4g25qrKBwZig",
+            authDomain: "project-petconnect.firebaseapp.com",
+            projectId: "project-petconnect",
+            storageBucket: "project-petconnect.appspot.com",
+            messagingSenderId: "155588273182",
+            appId: "1:155588273182:web:fc35e82fcd02a509243a0f",
+            measurementId: "G-8NPRLMDZ70"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Reference to the 'userCart' node
+        const cartRef = ref(database, 'userCart');
+    
+        // Fetch cart data from Firebase
+        function fetchCart() {
+            get(cartRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log("Cart Data: ", snapshot.val());  // Debug log
+                    const cartItems = snapshot.val();
+                    renderCart(cartItems);
+                } else {
+                    console.log("No data available");
+                    renderCart({});
+                }
+            }).catch((error) => {
+                console.error("Error getting cart data:", error);
+            });
+        }
+    
+        // Render the cart items in the table
+        function renderCart(cartItems) {
+            console.log("Rendering Cart: ", cartItems);  // Debug log
+            const cartTableBody = document.getElementById("cartItems");
+            cartTableBody.innerHTML = "";  // Clear the table body
+    
+            let grandTotal = 0;
+            if (Object.keys(cartItems).length === 0) {
+                cartTableBody.innerHTML = `<tr><td colspan="4">Your cart is empty.</td></tr>`;
+            } else {
+                for (const [key, item] of Object.entries(cartItems)) {
+                    const total = (item.price || 0) * (item.quantity || 1);
+                    grandTotal += total;
+    
+                    cartTableBody.innerHTML += `
+                        <tr>
+                            <td>
+                                <img src="${item.imageUrl || 'default-image.png'}" alt="${item.name}" style="width: 80px; height: auto; border-radius: 8px;">
+                            </td>
+                            <td>${item.name || 'Unnamed Item'}</td>
+                            <td>$${item.price || '0.00'}</td>
+                            <td>
+                                <button class="btn btn-danger" onclick="removeItem('${key}')">Remove</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+    
+            // Update Grand Total
+            document.getElementById("grandTotal").innerText = `$${grandTotal.toFixed(2)}`;
+        }
+    
+        // Remove item from Firebase Cart
+        function removeItem(itemId) {
+            const itemRef = ref(database, `userCart/${itemId}`);
+            remove(itemRef)
+                .then(() => {
+                    console.log("Item removed successfully");
+                    fetchCart(); // Refresh cart after removal
+                })
+                .catch((error) => {
+                    console.error("Error removing item:", error);
+                });
+        }
+    
+        // Empty the entire cart
+        function emptyCart() {
+            remove(cartRef)
+                .then(() => {
+                    console.log("Cart emptied successfully");
+                    fetchCart(); // Refresh cart after clearing
+                })
+                .catch((error) => {
+                    console.error("Error emptying the cart:", error);
+                });
+        }
+    
+        // Show purchase modal
+        function showModal() {
+            const cartItems = document.querySelectorAll("#cartItems tr");
+            if (cartItems.length === 0 || cartItems[0].querySelector("td").textContent === "Your cart is empty.") {
+                alert("Your cart is empty!");
+                return;
+            }
+            document.getElementById("modalOverlay").style.display = "flex";
+        }
+    
+        // Close purchase modal
+        function closeModal() {
+            document.getElementById("modalOverlay").style.display = "none";
+        }
+    
+        // Submit purchase
+        function submitPurchase() {
+            alert("Purchase complete. Thank you!");
+            closeModal();
+            emptyCart();
+        }
+    
+        // Initial render
+        fetchCart();
+    
     </script>
+    
+
 </body>
 </html>

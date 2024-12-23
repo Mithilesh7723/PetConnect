@@ -392,22 +392,19 @@ ul li a:hover {
         <h3>Product Listing Form</h3>
         <form id="productForm">
             <div class="input-box">
-            <input type="text" id="productName" placeholder="Product Name" required>
-
-            <select id="petType" class="form-select" required>
-                <option value="" disabled selected>Product Type</option>
-                <option value="Pet">Pets</option>
-                <option value="Pet_essential">Pet-Essentials</option>
-                <option value="Other">Other</option>
-            </select>
-
-            <textarea id="productDescription" placeholder="Product Description" rows="4" required></textarea>
-            <input type="number" id="productPrice" placeholder="Price" required>
-            <label for="productImage" class="custom-file-upload">Upload Product Image</label>
-            <input type="file" id="productImage" accept="image/*" required>
-            <img id="productImagePreview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
-            <img id="productImagePreview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
-            <button type="submit" class="btn">List Product</button>
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <select id="petType" class="form-select" required>
+                    <option value="" disabled selected>Product Type</option>
+                    <option value="Pet">Pets</option>
+                    <option value="Pet_essential">Pet-Essentials</option>
+                    <option value="Other">Other</option>
+                </select>
+                <textarea id="productDescription" placeholder="Product Description" rows="4" required></textarea>
+                <input type="number" id="productPrice" placeholder="Price" required>
+                <label for="productImage" class="custom-file-upload">Upload Product Image</label>
+                <input type="file" id="productImage" accept="image/*" required>
+                <img id="productImagePreview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
+                <button type="submit" class="btn">List Product</button>
             </div>
         </form>
     </div>
@@ -417,70 +414,89 @@ ul li a:hover {
         &copy; 2024 PetConnect. All rights reserved.
     </footer>
 
-    
-    <script>
-     // JavaScript for sell.html
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// Image Preview for Product Form
-// Select the form
-const productForm = document.getElementById('productForm');
-
-// Image Preview for Product Form
-const productImageInput = document.getElementById('productImage');
-const productImagePreview = document.getElementById('productImagePreview');
-
-productImageInput.addEventListener('change', () => {
-    const file = productImageInput.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            productImagePreview.src = e.target.result;
-            productImagePreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        productImagePreview.style.display = 'none';
-    }
-});
-
-// Handle product listing form submission
-productForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const productName = document.getElementById('productName').value.trim();
-    const productCategory = document.getElementById('petType').value.trim(); // Corrected ID here
-    const productDescription = document.getElementById('productDescription').value.trim();
-    const productPrice = parseFloat(document.getElementById('productPrice').value.trim());
-    const productImage = document.getElementById('productImage').files[0];
-
-    // Validate inputs
-    if (!productName || !productCategory || !productDescription || isNaN(productPrice) || productPrice <= 0 || !productImage) {
-        alert("Please fill all fields with valid information.");
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const newProduct = {
-            name: productName,
-            category: productCategory,
-            description: productDescription,
-            price: productPrice.toFixed(2), // Store price as a string with two decimal places
-            imageUrl: e.target.result,
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBP8nXl5E_sbgWJ0gtg2Zc4g25qrKBwZig",
+            authDomain: "project-petconnect.firebaseapp.com",
+            projectId: "project-petconnect",
+            storageBucket: "project-petconnect.appspot.com",
+            messagingSenderId: "155588273182",
+            appId: "1:155588273182:web:fc35e82fcd02a509243a0f",
+            measurementId: "G-8NPRLMDZ70"
         };
 
-        // Add product to the products array and update localStorage
-        const productsForSale = JSON.parse(localStorage.getItem('productsForSale')) || [];
-        productsForSale.push(newProduct);
-        localStorage.setItem('productsForSale', JSON.stringify(productsForSale));
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        alert("Product listed successfully!");
-        productForm.reset();
-        productImagePreview.style.display = 'none';
-    };
-    reader.readAsDataURL(productImage);
-});
+        // Form and Image Preview
+        const productForm = document.getElementById('productForm');
+        const productImageInput = document.getElementById('productImage');
+        const productImagePreview = document.getElementById('productImagePreview');
 
+        // Image Preview Functionality
+        productImageInput.addEventListener('change', () => {
+            const file = productImageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    productImagePreview.src = e.target.result;
+                    productImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                productImagePreview.style.display = 'none';
+            }
+        });
+
+        // Form Submission
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Input Values
+            const productName = document.getElementById('productName').value.trim();
+            const productCategory = document.getElementById('petType').value.trim();
+            const productDescription = document.getElementById('productDescription').value.trim();
+            const productPrice = parseFloat(document.getElementById('productPrice').value.trim());
+            const productImage = document.getElementById('productImage').files[0];
+
+            if (!productName || !productCategory || !productDescription || isNaN(productPrice) || productPrice <= 0 || !productImage) {
+                alert("Please fill all fields with valid information.");
+                return;
+            }
+
+            // Read and Upload Image
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const newProduct = {
+                    name: productName,
+                    category: productCategory,
+                    description: productDescription,
+                    price: productPrice.toFixed(2), // Price as a string
+                    imageUrl: e.target.result, // Base64 image data
+                };
+
+                try {
+                    const productsRef = ref(db, 'productsForSale');
+                    await push(productsRef, newProduct);
+
+                    // Reset Form and Notify
+                    alert("Product listed successfully!");
+                    productForm.reset();
+                    productImagePreview.style.display = 'none';
+                } catch (error) {
+                    console.error("Error adding product:", error);
+                    alert("Failed to add product. Please try again.");
+                }
+            };
+            reader.readAsDataURL(productImage);
+        });
     </script>
 </body>
 </html>

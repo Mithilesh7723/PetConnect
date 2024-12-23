@@ -472,150 +472,157 @@ ul li a:hover {
         </div>
     </footer>
 
-    <script src="/auth.js"></script>
-    <script>
-let currentDisplayCount = 8; // Number of items to display initially
-const productsForSaleListing = JSON.parse(localStorage.getItem('productsForSale')) || [];
-const adoptablePetsListing = JSON.parse(localStorage.getItem('adoptablePets')) || [];
+</head>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 
-const buyListing = document.getElementById('buyListing');
-const adoptListing = document.getElementById('adoptListing');
-const loadMoreButton = document.getElementById('loadMoreButton');
-const loadMoreContainer = document.getElementById('loadMoreContainer');
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
-// Initialize the cart from localStorage or an empty array
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const firebaseConfig = {
+        apiKey: "AIzaSyBP8nXl5E_sbgWJ0gtg2Zc4g25qrKBwZig",
+        authDomain: "project-petconnect.firebaseapp.com",
+        projectId: "project-petconnect",
+        storageBucket: "project-petconnect.appspot.com",
+        messagingSenderId: "155588273182",
+        appId: "1:155588273182:web:fc35e82fcd02a509243a0f",
+        measurementId: "G-8NPRLMDZ70"
+    };
 
-// Reusable function to display items
-function displayItems(items, container, isAdoptSection = false) {
-    container.innerHTML = ""; // Clear the container
-    if (items.length === 0) {
-        container.innerHTML = `<p class="text-center text-white">No items available.</p>`;
-        return;
-    }
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    const visibleItems = items.slice(0, currentDisplayCount);
+    const productsRef = ref(db, 'productsForSale');
+    const adoptablePetsRef = ref(db, 'adoptablePets');
+    const userCartRef = ref(db, 'userCart'); // Firebase path to store cart data
 
-    visibleItems.forEach((item) => {
-        const colDiv = document.createElement('div');
-        colDiv.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
+    const buyListing = document.getElementById('buyListing');
+    const adoptListing = document.getElementById('adoptListing');
+    const loadMoreButton = document.getElementById('loadMoreButton');
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
+    const loadMoreBuyButton = document.getElementById('loadMoreBuyButton');
+    const loadMoreBuyContainer = document.getElementById('loadMoreBuyContainer');
 
-        colDiv.innerHTML = `
-            <div class="card product-card">
-                <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
-                <div class="card-body text-center">
-                    <h5 class="card-title">${item.name}</h5>
-                    <p class="card-text"><strong>Type:</strong> ${item.category}</p>
-                    <p>${item.description}</p>
-                    ${item.price ? `<p><strong>Price:</strong> $${item.price}</p>` : ""}
-                    ${isAdoptSection ? `<button class="btn btn-secondary contact-lister-button">Contact Owner</button>` : `<button class="btn btn-primary add-to-cart-button" 
-                        data-name="${item.name}" 
-                        data-category="${item.category}" 
-                        data-description="${item.description}" 
-                        data-image="${item.imageUrl}"
-                        data-price="${item.price || 0}">
-                        Add to Cart
-                    </button>`}
-                </div>
-            </div>
-        `;
-        container.appendChild(colDiv);
-    });
+    let currentDisplayCount = 8; // Number of items to display initially
 
-    if (isAdoptSection && items.length > currentDisplayCount) {
-        loadMoreContainer.style.display = "block"; // Show "Load More" button for adopt section
-    } else {
-        loadMoreContainer.style.display = "none"; // Hide the button if no more items
-    }
-}
-
-// Display items in respective sections
-displayItems(productsForSaleListing, buyListing);
-displayItems(adoptablePetsListing, adoptListing, true);
-
-// Render cart items
-function renderCart() {
-    const cartContainer = document.getElementById('cartContainer');
-    if (!cartContainer) return; // Safely exit if container doesn't exist
-
-    cartContainer.innerHTML = ""; // Clear the cart container
-
-    if (cart.length === 0) {
-        cartContainer.innerHTML = `<p class="text-center">Your cart is empty.</p>`;
-        return;
-    }
-
-    cart.forEach((item) => {
-        const cartItemDiv = document.createElement('div');
-        cartItemDiv.classList.add('cart-item', 'mb-3');
-        cartItemDiv.innerHTML = `
-            <div class="card">
-                <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
-                <div class="card-body">
-                    <h5 class="card-title">${item.name}</h5>
-                    <p><strong>Type:</strong> ${item.category}</p>
-                    <p>${item.description}</p>
-                    <p><strong>Price:</strong> $${item.price}</p>
-                </div>
-            </div>
-        `;
-        cartContainer.appendChild(cartItemDiv);
-    });
-}
-
-// Handle "Add to Cart" button clicks
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('add-to-cart-button')) {
-        const petName = e.target.getAttribute('data-name');
-        const petCategory = e.target.getAttribute('data-category');
-        const petDescription = e.target.getAttribute('data-description');
-        const petImage = e.target.getAttribute('data-image');
-        const petPrice = parseFloat(e.target.getAttribute('data-price')) || 0;
-
-        // Check if item is already in the cart
-        const isItemInCart = cart.some(item => item.name === petName);
-        if (isItemInCart) {
-            alert(`${petName} is already in your cart!`);
+    // Function to display products dynamically
+    function displayItems(items, container, isAdoptSection = false) {
+        if (!items || items.length === 0) {
+            container.innerHTML = `<p class="text-center text-white">No items available.</p>`;
             return;
         }
 
-        // Create cart item object
-        const cartItem = {
-            name: petName,
-            category: petCategory,
-            description: petDescription,
-            imageUrl: petImage,
-            price: petPrice // Include the price
-        };
+        const visibleItems = items.slice(0, currentDisplayCount);
 
-        // Add item to cart
-        cart.push(cartItem);
+        // Clear container before appending new items
+        container.innerHTML = "";
 
-        try {
-            // Save updated cart to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-            alert(`${petName} has been added to your cart!`);
-            renderCart(); // Refresh the cart UI
-        } catch (error) {
-            if (error.name === "QuotaExceededError") {
-                alert("Your cart is full! Please clear some items before adding new ones.");
-            } else {
-                console.error("Error adding to cart:", error);
-            }
+        visibleItems.forEach((item) => {
+            const colDiv = document.createElement('div');
+            colDiv.classList.add('col-lg-3', 'col-md-4', 'col-sm-6', 'mb-4');
+
+            colDiv.innerHTML = `
+                <div class="card product-card">
+                    <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">${item.name}</h5>
+                        <p class="card-text"><strong>Type:</strong> ${item.category}</p>
+                        <p>${item.description}</p>
+                        ${item.price ? `<p><strong>Price:</strong> $${item.price}</p>` : ""}
+                        ${isAdoptSection ? 
+                            `<button class="btn btn-secondary contact-lister-button">Contact Owner</button>` : 
+                            `<button class="btn btn-primary add-to-cart-button" 
+                                data-name="${item.name}" 
+                                data-category="${item.category}" 
+                                data-description="${item.description}" 
+                                data-image="${item.imageUrl}"
+                                data-price="${item.price || 0}">
+                                Add to Cart
+                            </button>`}
+                    </div>
+                </div>
+            `;
+            container.appendChild(colDiv);
+        });
+
+        if (isAdoptSection && items.length > currentDisplayCount) {
+            loadMoreContainer.style.display = "block"; // Show "Load More" button for adopt section
+        } else {
+            loadMoreContainer.style.display = "none";
         }
     }
-});
 
-// Load the cart on page load
-document.addEventListener('DOMContentLoaded', () => {
-    renderCart();
-});
+    // Fetch products from Firebase and display them
+    function loadProducts() {
+        onValue(productsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const items = Object.values(data);
+                displayItems(items, buyListing);
+            }
+        });
+    }
 
+    // Fetch adoptable pets from Firebase and display them
+    function loadAdoptablePets() {
+        onValue(adoptablePetsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const items = Object.values(data);
+                displayItems(items, adoptListing, true);
+            }
+        });
+    }
 
+    // Load products and pets on page load
+    window.onload = () => {
+        loadProducts();
+        loadAdoptablePets();
+    };
 
+    // Add to cart functionality for both buy and adopt sections
+    function addToCart(item) {
+        const cartRef = ref(db, 'userCart/' + item.name); // Use item name as the unique identifier
+        set(cartRef, item)
+            .then(() => {
+                alert(`${item.name} has been added to the cart.`);
+            })
+            .catch((error) => {
+                console.error('Error adding item to cart:', error);
+            });
+    }
 
-    </script>
-    <!-- Bootstrap Bundle -->
+    // Event listener for "Add to Cart" button
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('add-to-cart-button')) {
+            const item = {
+                name: e.target.getAttribute('data-name'),
+                category: e.target.getAttribute('data-category'),
+                description: e.target.getAttribute('data-description'),
+                imageUrl: e.target.getAttribute('data-image'),
+                price: parseFloat(e.target.getAttribute('data-price'))
+            };
+
+            addToCart(item); // Add item to cart in Firebase
+        }
+    });
+
+    // Load more functionality for buy section
+    loadMoreBuyButton.addEventListener('click', () => {
+        currentDisplayCount += 8;
+        loadProducts(); // Reload the products with updated count
+    });
+
+    // Load more functionality for adopt section
+    loadMoreButton.addEventListener('click', () => {
+        currentDisplayCount += 8;
+        loadAdoptablePets(); // Reload the adoptable pets with updated count
+    });
+</script>
+
+        
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
